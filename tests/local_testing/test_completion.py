@@ -4520,3 +4520,46 @@ def test_humanloop_completion(monkeypatch):
         prompt_variables={"person": "John"},
         messages=[{"role": "user", "content": "Tell me a joke."}],
     )
+
+
+def test_completion_novita_ai():
+    try:
+        litellm.set_verbose = True
+        messages = [
+            {"role": "system", "content": "You're a good bot"},
+            {
+                "role": "user",
+                "content": "Hey",
+            },
+        ]
+        response = completion(
+            model="novita/meta-llama/llama-3.3-70b-instruct",
+            messages=messages,
+        )
+        print(response)
+    except Exception as e:
+        pytest.fail(f"Error occurred: {e}")
+
+
+@pytest.mark.parametrize(
+    "api_key, api_base", [(None, "my-bad-api-base"), ("my-bad-api-key", None)]
+)
+def test_completion_novita_ai_dynamic_params(api_key, api_base):
+    try:
+        litellm.set_verbose = True
+        messages = [
+            {"role": "system", "content": "You're a good bot"},
+            {
+                "role": "user",
+                "content": "Hey",
+            },
+        ]
+        response = completion(
+            model="novita/meta-llama/llama-3.3-70b-instruct",
+            messages=messages,
+            api_base=api_base,
+            api_key=api_key,
+        )
+        pytest.fail(f"This call should have failed!")
+    except Exception as e:
+        pass
